@@ -1,0 +1,2 @@
+# mobilecurling-auth
+Authentication server
