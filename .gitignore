@@ -15,3 +15,5 @@ build/
 # Test related files
 coverage/
 passwords.txt
+.vscode
+.idea
