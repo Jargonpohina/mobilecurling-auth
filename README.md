@@ -12,3 +12,11 @@ An example application built with dart_frog
 [very_good_analysis_link]: https://pub.dev/packages/very_good_analysis
 
 running fluently here: https://auth-ic4hp354na-ew.a.run.app/
+
+If you (tikibeni) want to update the GCloud build, remember these commands:
+
+```sh
+ ~/mobilecurling-auth$ dart_frog build
+ ~/mobilecurling-auth$ gcloud run deploy auth   --source build   --project=united-kiln-407618   --region=europe-west1   --allow-unauthenticated
+
+```
