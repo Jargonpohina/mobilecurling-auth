@@ -4,17 +4,18 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:dart_frog/dart_frog.dart';
+import 'package:mobilecurling_auth/core/shared_classes/user/user.dart';
 
 import '../../main.dart';
 
 Future<Response> onRequest(RequestContext context) async {
-  final data = await context.request.body();
-  final map = jsonDecode(data).first;
-  final user = map['username'] as String?;
-  final password = map['password'] as String?;
-  if (user != null && password != null) {
-    storage.set(user, password);
+  try {
+    final data = await context.request.body();
+    final map = jsonDecode(data) as Map<String, Object?>;
+    final user = User.fromJson(map);
+    storage.set(user.username, jsonEncode(user.toJson()));
     return Response(body: 'Register succesful');
+  } catch (e) {
+    return Response(statusCode: HttpStatus.unauthorized, body: 'Register unsuccesful');
   }
-  return Response(statusCode: HttpStatus.unauthorized, body: 'Register unsuccesful');
 }
