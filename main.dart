@@ -6,6 +6,6 @@ import 'package:tiny_storage/tiny_storage.dart';
 late TinyStorage storage;
 
 Future<HttpServer> run(Handler handler, InternetAddress ip, int port) async {
-  storage = await TinyStorage.init('passwords.txt', path: './');
+  storage = await TinyStorage.init('passwords.json', path: './');
   return serve(handler, ip, port);
 }
