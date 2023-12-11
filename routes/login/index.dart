@@ -2,6 +2,7 @@
 
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:dart_frog/dart_frog.dart';
 import 'package:encrypt/encrypt.dart';
@@ -16,7 +17,7 @@ Future<Response> onRequest(RequestContext context) async {
     final user = User.fromJson(map);
     final fetchUser = User.fromJson(jsonDecode(storage.get<String?>(user.username)!) as Map<String, Object?>);
     final plainPassword = user.password;
-    final key = Key.fromUtf8(plainPassword);
+    final key = Key(Uint8List.fromList(user.password.codeUnits));
     final iv = IV.fromLength(16);
     final encrypter = Encrypter(AES(key));
     final passwordEncrypted = encrypter.encrypt(plainPassword, iv: iv);
