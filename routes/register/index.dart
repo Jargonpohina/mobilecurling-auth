@@ -1,7 +1,5 @@
 // ignore_for_file: avoid_dynamic_calls, lines_longer_than_80_chars
-import 'dart:typed_data';
-
-import 'package:encrypt/encrypt.dart';
+import 'package:crypto/crypto.dart';
 
 import 'dart:convert';
 import 'dart:io';
@@ -16,13 +14,10 @@ Future<Response> onRequest(RequestContext context) async {
     final data = await context.request.body();
     final map = jsonDecode(data) as Map<String, Object?>;
     final user = User.fromJson(map);
-    final plainPassword = user.password;
     if (RegExp('[0-9a-zA-Z]').hasMatch(user.username) && user.username.length > 2 && RegExp('[0-9a-zA-Z]').hasMatch(user.password) && user.password.length > 2) {
-      final key = Key(Uint8List.fromList(user.password.codeUnits));
-      final iv = IV.fromLength(16);
-      final encrypter = Encrypter(AES(key));
-      final passowrdEncrypted = encrypter.encrypt(plainPassword, iv: iv);
-      storage.set(user.username, jsonEncode(user.copyWith(password: passowrdEncrypted.base64).toJson()));
+      final key = utf8.encode(user.password);
+      final passwordEncrypted = Hmac(sha256, key).convert(key);
+      storage.set(user.username, jsonEncode(user.copyWith(password: passwordEncrypted.toString()).toJson()));
       return Response(body: 'Register succesful');
     }
     return Response(statusCode: HttpStatus.unauthorized, body: 'Register unsuccesful');
