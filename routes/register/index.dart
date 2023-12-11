@@ -15,7 +15,7 @@ Future<Response> onRequest(RequestContext context) async {
     final map = jsonDecode(data) as Map<String, Object?>;
     final user = User.fromJson(map);
     final plainPassword = user.password;
-    if (RegExp("[0-9a-zA-Z]").hasMatch(user.username) && user.username.length > 2 && RegExp("[0-9a-zA-Z]").hasMatch(user.password) && user.password.length > 2) {
+    if (user.username.length > 2 && user.password.length > 2) {
       final key = Key.fromUtf8(plainPassword);
       final iv = IV.fromLength(16);
       final encrypter = Encrypter(AES(key));
