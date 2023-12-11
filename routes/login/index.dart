@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:dart_frog/dart_frog.dart';
+import 'package:encrypt/encrypt.dart';
 import 'package:mobilecurling_auth/core/shared_classes/user/user.dart';
 
 import '../../main.dart';
@@ -14,7 +15,12 @@ Future<Response> onRequest(RequestContext context) async {
     final map = jsonDecode(data) as Map<String, Object?>;
     final user = User.fromJson(map);
     final fetchUser = User.fromJson(jsonDecode(storage.get<String?>(user.username)!) as Map<String, Object?>);
-    if (user.password == fetchUser.password) {
+    final plainPassword = user.password;
+    final key = Key.fromUtf8(plainPassword);
+    final iv = IV.fromLength(16);
+    final encrypter = Encrypter(AES(key));
+    final passwordEncrypted = encrypter.encrypt(plainPassword, iv: iv);
+    if (passwordEncrypted.base64 == fetchUser.password) {
       return Response(body: jsonEncode(fetchUser.toJson()));
     } else {
       return Response(statusCode: HttpStatus.unauthorized, body: 'Wrong password');
