@@ -14,7 +14,7 @@ Future<Response> onRequest(RequestContext context) async {
     final map = jsonDecode(data) as Map<String, Object?>;
     final user = User.fromJson(map);
     final fetchUser = User.fromJson(jsonDecode(storage.get<String?>(user.username)!) as Map<String, Object?>);
-    if (user == fetchUser) {
+    if (user.username == fetchUser.username) {
       return Response(body: 'Validated succesfully');
     } else {
       return Response(statusCode: HttpStatus.unauthorized, body: 'Validate unsuccesful');
